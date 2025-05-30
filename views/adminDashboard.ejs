@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background-color: #1f1f1f;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.7);
+    }
+
+    nav a {
+      color: #eee;
+      text-decoration: none;
+      margin-right: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #4caf50;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 0.75rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #222;
+    }
+
+    tr:nth-child(even) {
+      background-color: #1a1a1a;
+    }
+
+    .container {
+      padding: 1rem 2rem;
+    }
+
+    input[type="text"] {
+      padding: 5px;
+      width: 200px;
+      background-color: #222;
+      border: 1px solid #555;
+      color: #eee;
+      margin-right: 10px;
+    }
+
+    .btn {
+      padding: 5px 10px;
+      background-color: #4caf50;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    .response-box {
+      margin-top: 8px;
+      font-style: italic;
+      color: #6fdc91;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div>
+      <a href="/admin/dashboard">Home</a>
+      <a href="/map">Map</a>
+    </div>
+    <div>
+      <a href="/auth/logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Admin Dashboard</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Reported By</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Date</th>
+          <th>Response</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% reports.forEach(report => { %>
+          <tr>
+            <td><%= report.reportedBy?.username || 'Unknown' %></td>
+            <td><%= report.type %></td>
+            <td><%= report.description %></td>
+            <td><%= new Date(report.createdAt).toLocaleString() %></td>
+            <td>
+              <% if (report.response && report.response.message) { %>
+                <div class="response-box">
+                  <strong>Sent:</strong> <%= report.response.message %><br />
+                  <small><%= new Date(report.response.respondedAt).toLocaleString() %></small>
+                </div>
+              <% } else { %>
+                <form action="/admin/respond/<%= report._id %>" method="POST">
+                  <input type="text" name="message" placeholder="Type response" required />
+                  <button type="submit" class="btn">Respond</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if (success_msg) { %>
+  <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <%= success_msg %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+<% if (error_msg) { %>
+  <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+    <%= error_msg %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+
+  <script>
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        try {
+          await fetch('/user/location', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lat: latitude, lng: longitude })
+          });
+          console.log('User location sent to server.');
+        } catch (error) {
+          console.error('Failed to send user location:', error);
+        }
+      }, (error) => {
+        console.error('Geolocation error:', error.message);
+      });
+    } else {
+      console.warn('Geolocation is not supported by this browser.');
+    }
+  </script>
+</body>
+</html>

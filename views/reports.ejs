@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Crime Reports | StaySafe</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    /* Base dark theme */
+    body {
+      background-color: #121212;
+      color: #f1f1f1;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    h1 {
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: #ff4c60;
+    }
+
+    .controls-row {
+      margin-bottom: 2rem;
+    }
+
+    .form-control, .form-select {
+      background-color: #1e1e1e;
+      border: none;
+      color: #ddd;
+      box-shadow: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-control::placeholder {
+      color: #888;
+      opacity: 1;
+    }
+
+    .form-control:focus, .form-select:focus {
+      background-color: #2a2a2a;
+      color: #fff;
+      outline: none;
+      box-shadow: 0 0 8px #ff4c60;
+    }
+
+    .btn-outline-primary {
+      color: #ff4c60;
+      border-color: #ff4c60;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+      background-color: #ff4c60;
+      color: #fff;
+      border-color: #ff4c60;
+      box-shadow: 0 4px 10px rgba(255, 76, 96, 0.5);
+    }
+
+    .report-card {
+      background-color: #1f1f1f;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 6px solid #ff4c60;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .report-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 20px rgba(255, 76, 96, 0.7);
+    }
+
+    .card-body {
+      flex-grow: 1;
+      padding: 1.4rem 1.6rem;
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+      color: #ff6f81;
+    }
+
+    .card-text {
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 0.8rem;
+      color: #ccc;
+    }
+
+    .card-text a {
+      color: #ff4c60;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .card-text a:hover {
+      text-decoration: underline;
+    }
+
+    .text-muted {
+      color: #666 !important;
+      font-size: 0.875rem;
+    }
+
+    #reportList.grid-view {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    #reportList:not(.grid-view) {
+      display: block;
+    }
+
+    #reportList:not(.grid-view) .report-item {
+      margin-bottom: 20px;
+    }
+
+    .alert-warning {
+      background-color: #2a2a2a;
+      color: #ff6f81;
+      border: none;
+      font-weight: 600;
+      text-align: center;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 6px rgba(255, 76, 96, 0.5);
+    }
+
+    .search-bar {
+      max-width: 400px;
+    }
+
+    .btn-toggle-icon {
+      vertical-align: middle;
+      margin-left: 6px;
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .btn-toggle-icon.rotate {
+      transform: rotate(180deg);
+    }
+
+    .back-home {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .back-home .btn-secondary {
+      background-color: #444;
+      border: none;
+      padding: 10px 30px;
+      font-weight: 600;
+      color: #eee;
+      border-radius: 50px;
+      transition: background-color 0.3s ease;
+    }
+
+    .back-home .btn-secondary:hover {
+      background-color: #ff4c60;
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 76, 96, 0.6);
+    }
+
+    @media (max-width: 575px) {
+      .controls-row > div {
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <% if (showSuccess) { %>
+    <script>
+      alert("✅ Your crime report has been successfully submitted.");
+      history.replaceState(null, "", window.location.pathname);
+    </script>
+  <% } %>
+
+  <div class="container mt-5 mb-5">
+    <h1 class="mb-4 text-center">Crime Reports (<%= reports.length %>)</h1>
+
+    <div class="row controls-row align-items-center">
+      <div class="col-md-4">
+        <input
+          type="text"
+          id="searchInput"
+          class="form-control search-bar"
+          placeholder="Search by crime type..."
+          aria-label="Search reports by crime type"
+        />
+      </div>
+      <div class="col-md-4">
+        <select
+          id="sortSelect"
+          class="form-select"
+          aria-label="Sort crime reports"
+        >
+          <option value="newest">Sort by Newest</option>
+          <option value="oldest">Sort by Oldest</option>
+        </select>
+      </div>
+      <div class="col-md-4 text-md-end text-center">
+        <button id="toggleView" class="btn btn-outline-primary" aria-pressed="false">
+          Toggle View
+          <span class="btn-toggle-icon">&#x1F5D2;</span>
+        </button>
+      </div>
+    </div>
+
+    <% if (reports.length === 0) { %>
+      <div class="alert alert-warning">No crime reports found.</div>
+    <% } else { %>
+      <div id="reportList" class="row row-cols-1 row-cols-md-2 g-4">
+        <% reports.forEach(report => { %>
+          <div
+            class="col report-item"
+            data-type="<%= report.crimeType.toLowerCase() %>"
+            data-date="<%= new Date(report.createdAt).getTime() %>"
+          >
+            <div class="card report-card shadow-sm">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title"><%= report.crimeType %></h5>
+                <p class="card-text"><strong>Description:</strong> <%= report.description %></p>
+                <p class="card-text">
+                  <strong>Location:</strong>
+                  <% if (report.location && Array.isArray(report.location.coordinates) && report.location.coordinates.length === 2) { %>
+                    <%= report.location.coordinates[1] %>, <%= report.location.coordinates[0] %> — 
+                    <a
+                      href="https://www.google.com/maps?q=<%= report.location.coordinates[1] %>,<%= report.location.coordinates[0] %>"
+                      target="_blank"
+                      rel="noopener"
+                    >View on Map</a>
+                  <% } else if (typeof report.location === 'string') { %>
+                    <%= report.location %>
+                  <% } else { %>
+                    Location data not available
+                  <% } %>
+                </p>
+                <p class="card-text text-muted mt-auto">
+                  <small>Reported on <%= new Date(report.createdAt).toLocaleString() %></small>
+                </p>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <div class="back-home">
+      <a href="/" class="btn btn-secondary" aria-label="Back to home">Back to Home</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const toggleView = document.getElementById('toggleView');
+    const reportList = document.getElementById('reportList');
+    const toggleIcon = toggleView.querySelector('.btn-toggle-icon');
+
+    searchInput.addEventListener('input', () => {
+      const keyword = searchInput.value.toLowerCase();
+      document.querySelectorAll('.report-item').forEach(item => {
+        item.style.display = item.dataset.type.includes(keyword) ? 'block' : 'none';
+      });
+    });
+
+    sortSelect.addEventListener('change', () => {
+      const items = [...document.querySelectorAll('.report-item')];
+      const sorted = items.sort((a, b) => {
+        const dateA = parseInt(a.dataset.date);
+        const dateB = parseInt(b.dataset.date);
+        return sortSelect.value === 'newest' ? dateB - dateA : dateA - dateB;
+      });
+
+      reportList.innerHTML = '';
+      sorted.forEach(item => reportList.appendChild(item));
+    });
+
+    toggleView.addEventListener('click', () => {
+      const isGrid = reportList.classList.toggle('grid-view');
+      toggleView.setAttribute('aria-pressed', isGrid);
+      toggleIcon.classList.toggle('rotate', isGrid);
+    });
+  </script>
+</body>
+</html>
