@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>All Alerts - StaySafe</title>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    body {
+      background-color: #121212;
+      color: #f5f5f5;
+    }
+    main {
+      flex: 1;
+    }
+    .navbar, .footer {
+      background-color: #1f1f1f !important;
+    }
+    .list-group-item {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      color: #fff;
+    }
+    .btn-outline-light:hover {
+      background-color: #fff;
+      color: #000;
+    }
+    .list-group-item ul {
+      padding-left: 1.2rem;
+    }
+    .list-group-item ul li {
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      color: #cccccc;
+    }
+
+     .card-body ul li {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    list-style: none;
+  }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">StaySafe</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="/reports" class="nav-link">Reports</a></li>
+          <li class="nav-item"><a href="/alerts" class="nav-link active">Alerts</a></li>
+          <!-- <li class="nav-item"><a href="/login" class="nav-link">Login</a></li> -->
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <section class="container py-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>All Crime Alerts</h2>
+        <div>
+          <button class="btn btn-sm btn-outline-light me-2" onclick="exportCSV()">Export CSV</button>
+          <button class="btn btn-sm btn-outline-light" onclick="exportPDF()">Export PDF</button>
+        </div>
+      </div>
+
+      <div class="card bg-dark text-light mb-5 shadow animate__animated animate__fadeInDown">
+  <div class="card-header bg-danger text-white fw-bold">
+    ⚠️ Stay Safe During Alerts
+  </div>
+  <div class="card-body">
+    <ul class="mb-0 animate__animated animate__fadeInUp animate__delay-1s">
+      <li><i class="fas fa-door-closed me-2 text-danger"></i><strong>Stay Indoors:</strong> Only go out if necessary. Lock all doors and windows.</li>
+      <li><i class="fas fa-eye me-2 text-warning"></i><strong>Be Aware:</strong> Avoid isolated areas. Stay alert.</li>
+      <li><i class="fas fa-phone-alt me-2 text-success"></i><strong>Emergency Numbers:</strong> Keep them saved and ready.</li>
+      <li><i class="fas fa-user-shield me-2 text-info"></i><strong>Follow Instructions:</strong> Obey authorities' directions quickly.</li>
+      <li><i class="fas fa-exclamation-triangle me-2 text-danger"></i><strong>Report Suspicious Activity:</strong> Use the app or call police.</li>
+    </ul>
+  </div>
+</div>
+
+
+
+      <% if (alerts.length === 0) { %>
+        <div class="alert alert-info">No alerts found.</div>
+      <% } else { %>
+        <div class="list-group mb-4">
+          <% alerts.forEach(alert => { %>
+            <div class="list-group-item list-group-item-action mb-3">
+              <h5><%= alert.type %></h5>
+              <p><%= alert.description %></p>
+             <small class="text-muted">
+  Location:
+  <%= alert.locationName ? alert.locationName : alert.location?.coordinates ? alert.location.coordinates[1] + ', ' + alert.location.coordinates[0] : 'Unknown' %> |
+  Date: <%= alert.createdAt.toDateString() %>
+</small>
+
+
+              <div class="mt-3">
+                <strong>Precaution Tips:</strong>
+                <ul class="mb-2">
+                  <% if (alert.type === 'Robbery') { %>
+                    <li>Avoid poorly lit or isolated areas at night.</li>
+                    <li>Stay alert and keep valuables out of sight.</li>
+                  <% } else if (alert.type === 'Assault') { %>
+                    <li>Stay in groups when traveling, especially at night.</li>
+                    <li>Trust your instincts and avoid confrontations.</li>
+                  <% } else if (alert.type === 'Murder') { %>
+                    <li>Avoid the area until further notice.</li>
+                    <li>Stay indoors and follow local authority advisories.</li>
+                  <% } else if (alert.type === 'Theft') { %>
+                    <li>Double-check locks on doors and windows.</li>
+                    <li>Report suspicious activity immediately.</li>
+                  <% } else { %>
+                    <li>Stay alert and informed. Follow any updates from local authorities.</li>
+                  <% } %>
+                </ul>
+              </div>
+
+              <% if (user && user.isAdmin) { %>
+                <div class="mt-2">
+                  <a href="/alerts/edit/<%= alert._id %>" class="btn btn-sm btn-warning me-2">Edit</a>
+                  <form action="/alerts/delete/<%= alert._id %>" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                  </form>
+                </div>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+
+        
+      <% } %>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer text-white text-center py-3">
+    <div class="container">
+      <small>&copy; <%= new Date().getFullYear() %> StaySafe. All rights reserved.</small>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <script>
+    
+    
+   
+  
+  // Now the rest of your JS can use 'alerts' array safely
+  const highRiskTypes = ['Assault', 'Murder', 'Robbery'];
+
+  alerts.forEach(alert => {
+    if (highRiskTypes.includes(alert.type)) {
+      const alertAudio = new Audio('/sounds/high-alert.mp3');
+      alertAudio.play();
+    }
+  });
+
+
+    alerts.forEach(alert => {
+      if (highRiskTypes.includes(alert.type)) {
+        const alertAudio = new Audio('/sounds/high-alert.mp3');
+        alertAudio.play();
+      }
+    });
+
+    function exportCSV() {
+      let csv = "Type,Description,Location,Date\n";
+      alerts.forEach(alert => {
+        const desc = alert.description.replace(/,/g, '');
+        csv += `${alert.type},${desc},${alert.location},${new Date(alert.createdAt).toDateString()}\n`;
+      });
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.setAttribute("href", URL.createObjectURL(blob));
+      link.setAttribute("download", "alerts.csv");
+      link.click();
+    }
+
+    function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(14);
+      doc.text("Crime Alerts", 10, 10);
+      let y = 20;
+      alerts.forEach(alert => {
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.text(`Type: ${alert.type}`, 10, y);
+        doc.text(`Desc: ${alert.description}`, 10, y + 7);
+        doc.text(`Loc: ${alert.location}`, 10, y + 14);
+        doc.text(`Date: ${new Date(alert.createdAt).toDateString()}`, 10, y + 21);
+        y += 30;
+      });
+      doc.save("alerts.pdf");
+    }
+  </script>
+
+</body>
+</html>

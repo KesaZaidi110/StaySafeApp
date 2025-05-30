@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StaySafe</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/style.css" />
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    a.nav-link {
+      color: #ccc;
+    }
+    a.nav-link.active,
+    a.nav-link:hover {
+      color: #ffc107;
+    }
+    .navbar {
+      background-color: #1f2937; /* Darker shade */
+      position: sticky;
+      top: 0;
+      z-index: 1030; /* make sure it's above other elements */
+    }
+    .hero-section {
+      background-color: #1e293b;
+      padding: 5rem 1rem;
+      text-align: center;
+      border-radius: 0 0 30px 30px;
+      box-shadow: 0 6px 15px rgba(255, 193, 7, 0.3);
+    }
+    .hero-section h1 {
+      color: #ffc107;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px #ffca28;
+    }
+    .hero-section p {
+      color: #ddd;
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .btn-primary {
+      background-color: #ffc107;
+      border: none;
+      color: #1a1a1a;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      box-shadow: 0 0 12px #ffca28;
+      transition: background-color 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: #e0a800;
+      box-shadow: 0 0 15px #e0a800;
+      color: #fff;
+    }
+    #map {
+      height: 350px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(255, 193, 7, 0.5);
+      margin-top: 20px;
+    }
+    section.container {
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+    h3 {
+      color: #ffc107;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 5px #ffca28;
+    }
+    .list-group-item {
+      background-color: #1e293b;
+      border: none;
+      color: #ddd;
+      box-shadow: 0 2px 8px rgba(255, 193, 7, 0.1);
+      margin-bottom: 12px;
+      border-radius: 10px;
+      transition: background-color 0.3s ease;
+    }
+    .list-group-item:hover {
+      background-color: #2a3a52;
+      color: #ffc107;
+      cursor: default;
+    }
+    footer {
+      background-color: #1f2937;
+      color: #aaa;
+      padding: 15px 0;
+      box-shadow: 0 -3px 10px rgba(255, 193, 7, 0.3);
+    }
+    /* Precautions section */
+    .precautions {
+      background-color: #1e293b;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+    }
+    .precautions h4 {
+      color: #ffd54f;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      text-shadow: 0 0 5px #ffca28;
+    }
+    .precautions ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .precautions ul li {
+      margin-bottom: 0.75rem;
+      padding-left: 1.5rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .precautions ul li::before {
+      content: "⚠️";
+      position: absolute;
+      left: 0;
+      color: #ffc107;
+      font-size: 1.2rem;
+      top: 0;
+    }
+
+
+     body {
+      background-color: #121212;
+      color: #eee;
+      padding: 40px;
+    }
+    .voice-report {
+      background-color: #1f1f1f;
+      border: 2px solid #ffc107;
+      border-radius: 10px;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
+    }
+    .voice-report h2 {
+      color: #ffc107;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .btn-speak {
+      background-color: #ffc107;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+    .btn-submit {
+      background-color: #28a745;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+    textarea {
+      resize: none;
+    }
+
+
+.location-alert-form {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* space between input and button */
+  margin-bottom: 1rem;
+}
+
+input[name="location"] {
+  width: 50%;
+  max-width: 200px;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f8f8f8;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[name="location"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+  outline: none;
+}
+
+.alert-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #dc3545;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.alert-btn:hover {
+  background-color: #c82333;
+}
+  
+
+
+
+
+
+
+
+  </style>
+</head>
+<body>
+
+  <!-- Navbar (single, cleaned-up) -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">StaySafeApp</a>
+      <button 
+        class="navbar-toggler" 
+        type="button" 
+        data-bs-toggle="collapse" 
+        data-bs-target="#navbarNav" 
+        aria-controls="navbarNav" 
+        aria-expanded="false" 
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link <%= (activePage === 'home') ? 'active' : '' %>" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= (activePage === 'alerts') ? 'active' : '' %>" href="/alerts">Alerts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= (activePage === 'reports') ? 'active' : '' %>" href="/reports">Reports</a>
+          </li>
+           <li class="nav-item">
+  <a class="nav-link" href="/weather">Weather & Disasters</a>
+</li>
+
+          <% if (user) { %>
+            <li class="nav-item">
+              <a class="nav-link <%= (activePage === 'dashboard') ? 'active' : '' %>" href="/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-danger" href="/auth/logout">Logout</a>
+            </li>
+          <% } else { %>
+            <li class="nav-item">
+              <a class="nav-link <%= (activePage === 'login') ? 'active' : '' %>" href="/auth/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= (activePage === 'register') ? 'active' : '' %>" href="/auth/register">Register</a>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="container">
+      <h1>Stay Informed. Stay Safe.</h1>
+      <p>Your neighborhood safety at your fingertips.</p>
+      <a href="/report-crime" class="btn btn-primary btn-lg">Report a Crime</a>
+    </div>
+  </header>
+
+ 
+
+
+  <!-- Recent Crime Alerts -->
+  <section class="container">
+    <h3>Recent Crime Alerts</h3>
+    <div class="list-group">
+      <% if (recentAlerts.length === 0) { %>
+        <div class="alert alert-info bg-dark text-warning border-warning">No alerts reported yet.</div>
+      <% } else { %>
+        <% recentAlerts.forEach(alert => { %>
+          <div class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong><%= alert.type %></strong> — <%= alert.description %><br />
+              <small class="text-muted">Location: <%= alert.location %> | <%= alert.createdAt.toDateString() %></small>
+            </div>
+          </div>
+        <% }); %>
+      <% } %>
+    </div>
+  </section>
+
+<h3>Send Alert to Admin</h3>
+
+<form action="/user/send-alert" method="POST" class="mb-4">
+  <div class="mb-3">
+    <label for="title" class="form-label">Alert Title</label>
+    <input type="text" name="title" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="message" class="form-label">Message</label>
+    <textarea name="message" class="form-control" rows="3" required></textarea>
+  </div>
+
+  <!-- Hidden input for location -->
+  <input type="hidden" name="location" id="locationField">
+
+  <button type="button" class="btn btn-outline-primary" onclick="getLocation()">📍 Use My Current Location</button>
+  <button type="submit" class="btn btn-success">Send Alert</button>
+</form>
+<% if (success_msg) { %>
+  <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <%= success_msg %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+<% if (error_msg) { %>
+  <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+    <%= error_msg %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+
+
+
+  <% if (user) { %>
+  <div class="container mt-5">
+    <h3 class="text-info">Your Recent Reports</h3>
+
+    <% if (userReports.length === 0) { %>
+      <p class="text-muted">You haven't submitted any reports yet.</p>
+    <% } else { %>
+      <ul class="list-group">
+        <% userReports.forEach(report => { %>
+          <li class="list-group-item">
+            <strong><%= report.type %></strong> — <%= report.description %> <br />
+           <small>Reported on <%= report.createdAt ? new Date(report.createdAt).toDateString() : 'Date not available' %></small>
+
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </div>
+  <% } %>
+
+
+  <section class="voice-report">
+    <h2>🎤 Voice Crime Report</h2>
+    <p class="text-center">Click the button and speak. We'll convert it to text.</p>
+
+    <form action="/reports/report-crime" method="POST">
+      <input type="hidden" name="crimeType" value="Voice Report">
+      <input type="hidden" name="location" value="Unknown">
+
+      <div class="mb-3">
+        <label for="voiceDescription" class="form-label">Crime Description</label>
+        <textarea
+          id="voiceDescription"
+          name="description"
+          rows="4"
+          class="form-control"
+          placeholder="Your voice will appear here..."
+          required
+        ></textarea>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <button type="button" id="startVoice" class="btn-speak">🎙️ Start Speaking</button>
+        <button type="submit" class="btn-submit">Submit</button>
+      </div>
+    </form>
+  </section>
+
+    
+
+
+
+  <!-- Crime Hotspot Map -->
+  <section class="container">
+    <h3>Crime Hotspot Map</h3>
+    <div id="map"></div>
+  </section>
+
+  <!-- Natural Disaster Precautions -->
+  <section class="container precautions">
+    <h4>Natural Disaster Precautions</h4>
+    <ul>
+      <li>Always have an emergency kit ready with essentials.</li>
+      <li>Know the evacuation routes and local shelters.</li>
+      <li>Stay informed via official alerts and news channels.</li>
+      <li>Secure loose items around your home before a storm.</li>
+      <li>Have a communication plan with family members.</li>
+    </ul>
+  </section>
+
+  <footer class="text-center mt-5">
+    <p>© 2025 StaySafeApp. All rights reserved.</p>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Bootstrap JS Bundle (Popper included) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Initialize Leaflet map
+    const map = L.map('map').setView([40.7128, -74.0060], 12); // Center on NYC as example
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(map);
+
+   
+  
+ 
+
+   const startBtn = document.getElementById("startVoice");
+    const textarea = document.getElementById("voiceDescription");
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      startBtn.addEventListener("click", () => {
+        recognition.start();
+      });
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        textarea.value = transcript;
+      };
+
+      recognition.onerror = (event) => {
+        alert("Speech recognition error: " + event.error);
+      };
+    } else {
+      alert("Sorry, your browser does not support speech recognition.");
+    }
+
+   
+    hotspots.forEach(hotspot => {
+      L.circle([hotspot.lat, hotspot.lng], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 500
+      }).addTo(map)
+      .bindPopup(`<b>${hotspot.type}</b><br>${hotspot.description}`);
+    });
+
+
+
+    function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        document.getElementById('locationField').value = `${lat},${lng}`;
+        alert("📍 Location added to your alert!");
+      },
+      function (error) {
+        alert("⚠️ Could not get location: " + error.message);
+      }
+    );
+  } else {
+    alert("❌ Geolocation is not supported in your browser.");
+  }
+}
+  </script>
+
+</body>
+</html>

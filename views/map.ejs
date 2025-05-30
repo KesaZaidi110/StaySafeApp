@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crime Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    #map {
+      height: 60vh;
+      border-radius: 10px;
+    }
+    .controls {
+      margin-bottom: 20px;
+      background: #1e1e1e;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    select, button {
+      margin-bottom: 10px;
+      background-color: #2c2c2c;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    select:focus, button:focus {
+      outline: none;
+      box-shadow: 0 0 5px #007bff;
+    }
+    .top-right {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+    }
+    .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+      background: #2e2e2e;
+      color: white;
+    }
+    .today-summary, .weekly-chart-container {
+      background: #1e1e1e;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .today-summary h5, .weekly-chart-container h5 {
+      color: #ffc107;
+    }
+    @media (max-width: 768px) {
+      #map {
+        height: 50vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="top-right">
+      <a href="/" class="btn btn-secondary">Back to Home</a>
+    </div>
+    <h2 class="mb-3">Crime Map</h2>
+
+    <div class="today-summary">
+      <h5>Today's Crime Summary by City</h5>
+      <ul id="crimeSummaryList" class="mb-0"></ul>
+    </div>
+
+    <div class="weekly-chart-container">
+      <h5>Weekly Crime Trend</h5>
+      <canvas id="weeklyChart" height="100"></canvas>
+    </div>
+
+    <div class="controls row">
+      <div class="col-md-3">
+        <select id="countrySelect" class="form-select">
+          <option selected disabled>Select Country</option>
+          <option>India</option>
+          <option>USA</option>
+          <option>Canada</option>
+          <option>UK</option>
+          <option>Germany</option>
+          <option>Australia</option>
+          <option>France</option>
+          <option>Japan</option>
+          <option>Brazil</option>
+          <option>Mexico</option>
+          <option>South Africa</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select id="stateSelect" class="form-select">
+          <option selected disabled>Select State</option>
+          <option>Maharashtra</option>
+          <option>Delhi</option>
+          <option>Karnataka</option>
+          <option>Uttar Pradesh</option>
+          <option>Tamil Nadu</option>
+          <option>West Bengal</option>
+          <option>Punjab</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select id="crimeTypeFilter" class="form-select">
+          <option value="all">All Crime Types</option>
+          <option value="Theft">Theft</option>
+          <option value="Assault">Assault</option>
+          <option value="Robbery">Robbery</option>
+          <option value="Vandalism">Vandalism</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <button onclick="updateMap()" class="btn btn-outline-warning w-100">Submit</button>
+      </div>
+    </div>
+
+    <div id="map"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+   
+    const map = L.map('map').setView([20.5937, 78.9629], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const markers = [];
+
+    function renderMarkers(filteredReports = crimeReports) {
+      markers.forEach(marker => map.removeLayer(marker));
+      markers.length = 0;
+
+      filteredReports.forEach(report => {
+        const coords = report.location.coordinates;
+        const marker = L.marker([coords[1], coords[0]]).addTo(map);
+        marker.bindPopup(`
+          <strong>${report.crimeType}</strong><br>
+          ${report.description}<br>
+          <small>${new Date(report.createdAt).toLocaleString()}</small>
+        `);
+        markers.push(marker);
+      });
+    }
+
+    function updateMap() {
+      const country = document.getElementById('countrySelect').value;
+      const state = document.getElementById('stateSelect').value;
+      const crimeType = document.getElementById('crimeTypeFilter').value;
+
+      const filtered = crimeReports.filter(r => {
+        const matchCountry = (country === 'Select Country' || r.country === country);
+        const matchState = (state === 'Select State' || r.state === state);
+        const matchType = (crimeType === 'all' || r.crimeType === crimeType);
+        return matchCountry && matchState && matchType;
+      });
+
+      if (filtered.length > 0) {
+        const first = filtered[0].location.coordinates;
+        map.setView([first[1], first[0]], 10);
+      }
+      renderMarkers(filtered);
+      summarizeTodayCrimes(filtered);
+      generateWeeklyChart(filtered);
+    }
+
+    function summarizeTodayCrimes(filteredReports = crimeReports) {
+      const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+      const todayReports = filteredReports.filter(report => {
+        const reportDate = new Date(report.createdAt).toISOString().split('T')[0]; // Report date in YYYY-MM-DD format
+        return reportDate === today; // Filter reports that match today's date
+      });
+
+      const summaryList = document.getElementById('crimeSummaryList');
+      summaryList.innerHTML = '';  // Clear previous summary
+
+      todayReports.forEach(report => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${report.crimeType} in ${report.city} - ${new Date(report.createdAt).toLocaleTimeString()}`;
+        summaryList.appendChild(listItem);
+      });
+
+      // If no crimes today, display a message
+      if (todayReports.length === 0) {
+        summaryList.innerHTML = '<li>No crimes reported today.</li>';
+      }
+    }
+
+    function generateWeeklyChart(filteredReports = crimeReports) {
+      const weeklyCrimeCounts = {};  // Object to store crime counts per day of the week
+
+      filteredReports.forEach(report => {
+        const reportDate = new Date(report.createdAt);
+        const dayOfWeek = reportDate.toLocaleString('en-us', { weekday: 'long' }); // Get day of the week (e.g., "Monday")
+
+        if (!weeklyCrimeCounts[dayOfWeek]) {
+          weeklyCrimeCounts[dayOfWeek] = 0;
+        }
+        weeklyCrimeCounts[dayOfWeek]++;
+      });
+
+      const chartLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const chartData = chartLabels.map(day => weeklyCrimeCounts[day] || 0);
+
+      const ctx = document.getElementById('weeklyChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: chartLabels,
+          datasets: [{
+            label: 'Crimes Reported This Week',
+            data: chartData,
+            borderColor: '#ffc107',
+            backgroundColor: 'rgba(255, 193, 7, 0.2)',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    renderMarkers();
+    summarizeTodayCrimes();
+    generateWeeklyChart();
+  </script>
+</body>
+</html>
