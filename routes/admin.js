@@ -1,62 +1,92 @@
 const express = require('express');
 const router = express.Router();
-const CrimeReport = require('../models/CrimeReport');
+const { isAuthenticated, isAdmin } = require('../middleware/auth');
+const Listing = require('../models/Listing');
+const Booking = require('../models/Booking');
 
-// Middleware to protect admin routes
-function ensureAdmin(req, res, next) {
-  if (req.session.user && req.session.user.role === 'admin') {
-    return next();
-  }
-  res.redirect('/login'); // redirect to login if not admin
-}
-
-// Admin dashboard route
-router.get('/dashboard', ensureAdmin, async (req, res) => {
+// Admin dashboard - show listings + all bookings
+router.get('/', isAuthenticated, isAdmin, async (req, res) => {
   try {
-    const reports = await CrimeReport.find()
-      .populate('reportedBy', 'username')
-      .sort({ createdAt: -1 });
+    const listings = await Listing.find().sort({ createdAt: -1 });
+    const bookings = await Booking.find()
+      .populate('user', 'username')      // Populate only username from user
+      .populate('listing', 'title');     // Populate only title from listing
 
-    res.render('adminDashboard', { reports });
-  } catch (error) {
-    console.error('Admin dashboard error:', error);
-    res.status(500).send('Server error while loading admin dashboard');
+    res.render('admin/dashboard', {
+      user: req.session.user,
+      listings,
+      bookings
+    });
+  } catch (err) {
+    console.error('Error loading admin dashboard:', err);
+    res.send('Error loading admin dashboard');
   }
 });
 
-// Delete report route
-router.post('/delete/:id', ensureAdmin, async (req, res) => {
+// Show new listing form
+router.get('/new-listing', isAuthenticated, isAdmin, (req, res) => {
+  res.render('admin/new-listing', { user: req.session.user, error: null });
+});
+
+// Create new listing
+router.post('/new-listing', isAuthenticated, isAdmin, async (req, res) => {
   try {
-    await CrimeReport.findByIdAndDelete(req.params.id);
-    res.redirect('/admin/dashboard');
-  } catch (error) {
-    console.error('Error deleting report:', error);
-    res.status(500).send('Server Error');
+    const { title, description, location, price } = req.body;
+    const listing = new Listing({ title, description, location, price });
+    await listing.save();
+    res.redirect('/admin');
+  } catch {
+    res.render('admin/new-listing', {
+      user: req.session.user,
+      error: 'Failed to create listing'
+    });
   }
 });
 
-// ✅ Updated: Respond to report route
-// Respond to report route
-router.post('/respond/:id', ensureAdmin, async (req, res) => {
+// Show edit listing form
+router.get('/edit-listing/:id', isAuthenticated, isAdmin, async (req, res) => {
+  const listing = await Listing.findById(req.params.id);
+  if (!listing) return res.redirect('/admin');
+  res.render('admin/edit-listing', {
+    user: req.session.user,
+    listing,
+    error: null
+  });
+});
+
+// Update listing
+router.post('/edit-listing/:id', isAuthenticated, isAdmin, async (req, res) => {
   try {
-    const report = await CrimeReport.findById(req.params.id);
-    if (!report) return res.status(404).send('Report not found');
-
-    report.response = {
-      message: req.body.message,
-      respondedAt: new Date(),
-      respondedBy: req.session.user._id
-    };
-    await report.save();
-
-    req.flash('success_msg', 'Response sent to the user successfully!');
-    res.redirect('/admin/dashboard');
-  } catch (error) {
-    console.error('Error responding to report:', error);
-    req.flash('error_msg', 'Something went wrong while sending response.');
-    res.redirect('/admin/dashboard');
+    const { title, description, location, price } = req.body;
+    await Listing.findByIdAndUpdate(req.params.id, {
+      title,
+      description,
+      location,
+      price
+    });
+    res.redirect('/admin');
+  } catch {
+    const listing = await Listing.findById(req.params.id);
+    res.render('admin/edit-listing', {
+      user: req.session.user,
+      listing,
+      error: 'Failed to update listing'
+    });
   }
 });
 
+// Delete listing
+router.post('/delete-listing/:id', isAuthenticated, isAdmin, async (req, res) => {
+  await Listing.findByIdAndDelete(req.params.id);
+  res.redirect('/admin');
+});
+
+// Separate bookings page (optional if you're already showing it on dashboard)
+router.get('/bookings', isAuthenticated, isAdmin, async (req, res) => {
+  const bookings = await Booking.find()
+    .populate('user', 'username')
+    .populate('listing', 'title');
+  res.render('admin/bookings', { bookings });
+});
 
 module.exports = router;

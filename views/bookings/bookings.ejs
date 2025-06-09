@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css" />
+
+</head>
+<body>
+    <h2>All Bookings</h2>
+<table border="1">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Listing</th>
+      <th>Check-In</th>
+      <th>Check-Out</th>
+      <th>Payment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% bookings.forEach(b => { %>
+      <tr>
+        <td><%= b.user.username %></td>
+        <td><%= b.listing.title %></td>
+        <td><%= b.checkIn %></td>
+        <td><%= b.checkOut %></td>
+        <td><%= b.paymentMethod %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+</body>
+</html>

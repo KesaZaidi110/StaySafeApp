@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>New Listing</title>
+  <link rel="stylesheet" href="/css/style.css" />
+
+</head>
+<body>
+  <nav>
+    <a href="/admin">Home</a> |
+    <a href="/logout">Logout</a>
+  </nav>
+
+  <h1>Create New Listing</h1>
+
+  <% if (error) { %>
+    <p style="color:red;"><%= error %></p>
+  <% } %>
+
+  <form method="POST" action="/admin/new-listing">
+    <label>Title:</label><br/>
+    <input type="text" name="title" required/><br/>
+
+    <label>Description:</label><br/>
+    <textarea name="description"></textarea><br/>
+
+    <label>Location:</label><br/>
+    <input type="text" name="location" /><br/>
+
+    <label>Price:</label><br/>
+    <input type="number" name="price" step="0.01" /><br/><br/>
+
+    <button type="submit">Create</button>
+  </form>
+  <script>
+  const toggleButton = document.getElementById('theme-toggle');
+  const currentTheme = localStorage.getItem('theme');
+
+  if (currentTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+  }
+
+  toggleButton.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+    if (document.body.classList.contains('dark-theme')) {
+      localStorage.setItem('theme', 'dark');
+    } else {
+      localStorage.removeItem('theme');
+    }
+  });
+</script>
+
+</body>
+</html>

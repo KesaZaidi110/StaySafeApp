@@ -1,0 +1,775 @@
+/* General Body Styling */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #986781, #67987E);
+  margin: 0;
+  padding: 0;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* Heading */
+h1 {
+  margin-bottom: 20px;
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+}
+
+/* Form Container */
+form {
+  background-color: #fff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+/* Labels */
+form label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: 500;
+}
+
+/* Input Fields */
+form input,
+form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 2px solid #986781;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.3s;
+}
+
+form input:focus,
+form select:focus {
+  border-color: #67987E;
+  box-shadow: 0 0 5px rgba(103, 152, 126, 0.4);
+}
+
+/* Submit Button */
+form button {
+  background-color: #986781;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+form button:hover {
+  background-color: #67987E;
+}
+
+/* Error Message */
+p[style*="color:red"] {
+  background-color: #ffe6e6;
+  padding: 10px;
+  border-radius: 8px;
+  border-left: 4px solid red;
+  color: red;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+/* Bottom Link */
+p a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+p a:hover {
+  color: #f2f2f2;
+}
+
+
+/* ---------------- Sign In Page Styling ---------------- */
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #986781, #67987E);
+  margin: 0;
+  padding: 0;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* Heading */
+h1 {
+  margin-bottom: 20px;
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+}
+
+/* Form Container */
+form {
+  background-color: #fff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+/* Labels */
+form label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: 500;
+}
+
+/* Input Fields */
+form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 2px solid #986781;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.3s;
+}
+
+form input:focus {
+  border-color: #67987E;
+  box-shadow: 0 0 5px rgba(103, 152, 126, 0.4);
+}
+
+/* Submit Button */
+form button {
+  background-color: #986781;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+form button:hover {
+  background-color: #67987E;
+}
+
+/* Error Message */
+p[style*="color:red"] {
+  background-color: #ffe6e6;
+  padding: 10px;
+  border-radius: 8px;
+  border-left: 4px solid red;
+  color: red;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+/* Bottom Link */
+p a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+p a:hover {
+  color: #f2f2f2;
+}
+
+/* ------------------ Home Listings Page ------------------ */
+
+body {
+  background: #f4f4f9;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Listing Section Title */
+.container h1 {
+  color: #986781;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: bold;
+  padding-top: 70px;
+}
+
+/* Listing Cards */
+.listing-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #ffffff;
+}
+
+.listing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Listing Images */
+.listing-img {
+  height: 220px;
+  object-fit: cover;
+  border-bottom: 2px solid #986781;
+}
+
+/* Card Body */
+.card-body {
+  padding: 15px 20px;
+}
+
+/* Card Title */
+.card-title {
+  color: #67987E;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+.card-body .btn-primary {
+  background-color: #986781;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.card-body .btn-primary:hover {
+  background-color: #864569;
+}
+
+.card-body .btn-warning {
+  background-color: #f0ad4e;
+  border: none;
+}
+
+.card-body .btn-warning:hover {
+  background-color: #ec971f;
+}
+
+.card-body .btn-danger {
+  background-color: #d9534f;
+  border: none;
+}
+
+.card-body .btn-danger:hover {
+  background-color: #c9302c;
+}
+
+/* Spacing between cards */
+.card + .card {
+  margin-top: 20px;
+}
+
+/* Responsive Fix for smaller screens */
+@media (max-width: 768px) {
+  .listing-img {
+    height: 180px;
+  }
+}
+/* Extra spacing between cards */
+.listing-card {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  background: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.listing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Navigation */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #986781;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-right: 15px;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+#theme-toggle {
+  background-color: #67987E;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Headings */
+h1 {
+  color: #986781;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+h2 {
+  color: #67987E;
+  font-size: 1.5rem;
+  margin-top: 30px;
+}
+
+/* Booking List */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: white;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-left: 5px solid #67987E;
+  border-radius: 5px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+li:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Dark Theme */
+.dark-theme {
+  background: #121212;
+  color: #eee;
+}
+
+.dark-theme nav {
+  background-color: #333;
+}
+
+.dark-theme nav a,
+.dark-theme #theme-toggle {
+  color: #eee;
+}
+
+.dark-theme li {
+  background: #1e1e1e;
+  color: #eee;
+  border-color: #986781;
+}
+
+
+/* Navbar container */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #986781;
+  padding: 10px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Nav links container on left */
+nav .nav-left {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* Nav links container on right */
+nav .nav-right {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+/* Style for all nav links */
+nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+nav a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Theme toggle button */
+#theme-toggle {
+  background-color: #67987E;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+#theme-toggle:hover {
+  background-color: #55806d;
+}
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #986781;
+  padding: 10px 40px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  gap: 25px; /* space between links/buttons */
+}
+
+/* All links and buttons inside nav */
+nav a, nav button {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+nav a:hover, nav button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Theme toggle button special styling */
+#theme-toggle {
+  background-color: #67987E;
+  border-radius: 6px;
+}
+
+#theme-toggle:hover {
+  background-color: #55806d;
+}
+
+
+/* Navbar styling */
+nav {
+  background-color: #67987E;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: center; /* center nav items */
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  font-weight: 600;
+}
+
+nav a, nav button {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+nav a:hover,
+nav button:hover {
+  background-color: #986781;
+}
+
+/* Theme toggle button distinct style */
+#theme-toggle {
+  background-color: #986781;
+  font-weight: 700;
+}
+
+#theme-toggle:hover {
+  background-color: #7a546a;
+}
+
+/* Page container */
+h2, h3 {
+  text-align: center;
+  color: #986781;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+/* Bookings list */
+ul {
+  max-width: 600px;
+  margin: 0 auto 40px auto;
+  list-style-type: none;
+  padding: 0 20px;
+}
+
+li {
+  background-color: white;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-left: 5px solid #67987E;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-size: 1rem;
+  color: #444;
+}
+
+li em {
+  color: #999;
+  font-style: italic;
+}
+
+/* Dark theme overrides */
+.dark-theme {
+  background-color: #222;
+  color: #eee;
+}
+
+.dark-theme nav {
+  background-color: #986781;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+}
+
+.dark-theme nav a,
+.dark-theme nav button {
+  color: #eee;
+}
+
+.dark-theme nav a:hover,
+.dark-theme nav button:hover {
+  background-color: #67987E;
+}
+
+.dark-theme li {
+  background-color: #333;
+  border-left-color: #986781;
+  color: #ddd;
+}
+
+.dark-theme li em {
+  color: #bbb;
+}
+
+
+h1 {
+  font-size: 3rem;
+  color: #67987E;
+  margin-bottom: 20px;
+  animation: popIn 0.6s ease forwards;
+}
+
+p {
+  font-size: 1.3rem;
+  margin-bottom: 30px;
+  color: #986781;
+}
+
+.btn-primary {
+  background-color: #67987E;
+  border: none;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(103, 152, 126, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: #986781;
+  box-shadow: 0 6px 12px rgba(152, 103, 129, 0.5);
+  text-decoration: none;
+}
+
+/* Subtle pop-in animation for the heading */
+@keyframes popIn {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+
+.inline-form {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+
+
+
+.inline-form {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+
+.btn-action:hover {
+  background-color: #4d7363;
+}
+
+.btn-delete {
+  background-color: #986781;
+}
+
+.btn-delete:hover {
+  background-color: #7a5366;
+}
+
+
+
+.inline-form {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.btn-action {
+  background-color: #67987E;
+ 
+  padding: 6px 16px; /* Bigger padding for Edit */
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  vertical-align: middle;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+  text-align: center;
+  line-height: 1.5;
+  min-width: 80px;
+}
+
+.btn-action:hover {
+  background-color: #4d7363;
+}
+
+.btn-delete {
+  background-color: #986781;
+  padding: 4px 10px;  /* Smaller padding for Delete */
+  font-size: 0.8rem;   /* Smaller font */
+  min-width: 50px;    /* Smaller min width */
+}
+
+.btn-delete:hover {
+  background-color: #7a5366;
+}
+
+.inline-form {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: middle;
+  background: transparent; /* Remove form background */
+  padding: 0; /* Remove form padding */
+  margin: 0;  /* Remove form margin */
+  border: none; /* Remove form border */
+}
+
+.btn-action {
+  background-color: #67987E;
+  color: white;
+  padding: 6px 16px; /* Bigger padding for Edit */
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  vertical-align: middle;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+  text-align: center;
+  line-height: 1.5;
+  min-width: 80px;
+}
+
+.btn-action:hover {
+  background-color: #4d7363;
+}
+
+.btn-delete {
+  background-color: transparent; /* Transparent background */
+  color: #986781;
+  padding: 2px 6px;  /* Smaller padding */
+  font-size: 0.8rem;   /* Smaller font */
+  min-width: auto;    /* Let width adjust to content */
+  border: none;       /* No border */
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.btn-delete:hover {
+  color: #7a5366;
+  text-decoration: underline;
+}
+
+
+.footer {
+  background-color: #222;
+  color: #eee;
+  font-size: 14px;
+  border-top: 1px solid #444;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer a {
+  color: #c9a6d1;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: #e3c1f1;
+  text-decoration: underline;
+}

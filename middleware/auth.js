@@ -1,30 +1,16 @@
-// middleware/auth.js
-
-function ensureAuthenticated(req, res, next) {
-  if (req.session && req.session.user) {
-    return next();
-  }
-  res.redirect('/auth/login');
+function isAuthenticated(req, res, next) {
+  if (req.session.user) return next();
+  res.redirect('/signin');
 }
 
-// Middleware to restrict access to admins only
-function ensureAdmin(req, res, next) {
-  if (req.session && req.session.user && req.session.user.role === 'admin') {
-    return next();
-  }
-  res.status(403).send('Access denied. Admins only.');
+function isAdmin(req, res, next) {
+  if (req.session.user && req.session.user.role === 'admin') return next();
+  res.status(403).send('Access denied');
 }
 
-// Middleware to restrict access to users only
-function ensureUser(req, res, next) {
-  if (req.session && req.session.user && req.session.user.role === 'user') {
-    return next();
-  }
-  res.status(403).send('Access denied. Users only.');
+function isUser(req, res, next) {
+  if (req.session.user && req.session.user.role === 'user') return next();
+  res.status(403).send('Access denied');
 }
 
-module.exports = {
-  ensureAuthenticated,
-  ensureAdmin,
-  ensureUser
-};
+module.exports = { isAuthenticated, isAdmin, isUser };

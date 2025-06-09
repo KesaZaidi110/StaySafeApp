@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="/css/style.css" />
+
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+
+<h2>Listings</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Location</th>
+      <th>Price</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% listings.forEach(listing => { %>
+      <tr>
+        <td><%= listing.title %></td>
+        <td><%= listing.description %></td>
+        <td><%= listing.location %></td>
+        <td>$<%= listing.price.toFixed(2) %></td>
+        <td>
+          <a href="/admin/edit-listing/<%= listing._id %>" class="who">Edit</a>
+          <form method="POST"  action="/admin/delete-listing/<%= listing._id %>" style="display:inline;">
+            <button onclick="return confirm('Delete this listing?')">Delete</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<h2>All Bookings</h2>
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Listing</th>
+      <th>Check In</th>
+      <th>Check Out</th>
+      <th>Payment Method</th>
+      <th>Name</th>
+      <th>Actions</th> <!-- Optional: maybe cancel booking? -->
+    </tr>
+  </thead>
+  <tbody>
+    <% bookings.forEach(booking => { %>
+      <tr>
+        <td><%= booking.user.username %></td>
+        <td><%= booking.listing.title %></td>
+        <td><%= booking.checkIn.toDateString() %></td>
+        <td><%= booking.checkOut.toDateString() %></td>
+        <td><%= booking.paymentMethod %></td>
+        <td><%= booking.name %></td>
+        <td>
+          <!-- Optional actions like cancel booking -->
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+</body>
+</html>

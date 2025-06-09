@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="/css/style.css" />
+
+</head>
+<body>
+  <h1>Sign Up</h1>
+
+  <% if (error) { %>
+    <p style="color:red;"><%= error %></p>
+  <% } %>
+
+  <form method="POST" action="/signup">
+    <label>Username:</label><br/>
+    <input type="text" name="username" required/><br/>
+
+    <label>Email:</label><br/>
+    <input type="email" name="email" required/><br/>
+
+    <label>Password:</label><br/>
+    <input type="password" name="password" required/><br/>
+
+    <label>Role:</label><br/>
+    <select name="role" required>
+      <option value="user" selected>User</option>
+      <option value="admin">Admin</option>
+    </select><br/><br/>
+
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <p>Have an account? <a href="/signin">Sign In</a></p>
+</body>
+</html>
