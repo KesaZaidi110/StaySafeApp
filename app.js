@@ -72,7 +72,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-mongoose.connect("mongodb://localhost:27017/staysafe", {
+mongoose.connect("mongodb+srv://Kesa:<db_password>@cluster0.l9rczry.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
