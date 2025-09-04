@@ -1,7 +1,7 @@
 const express = require('express');
 const CrimeReport = require('../models/CrimeReport');
 const Alert = require('../models/Alert');
-const User = require('../models/User');
+const User = require('../models/user');
 
 const router = express.Router();
 
